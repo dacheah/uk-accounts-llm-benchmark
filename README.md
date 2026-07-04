@@ -11,25 +11,30 @@ leaders.** The scarce, defensible asset isn't the model; it's clean, verified UK
 **Clean benchmark** — 1,000 verified Q&A from structured UK financials (extraction, comparison,
 ratio, boolean, disclosure).
 
-| Model | Type | Accuracy |
-|---|---|---|
-| Claude Opus 4.8 | proprietary | 99.6% |
-| DeepSeek V4 Pro | **open** | 99.5% |
-| GPT-5.5 | proprietary | 98.4% |
-| GLM 5.2 | **open** | 98.4% |
-| Gemini 2.5 Pro | proprietary | 98.1% |
+| Model | Type | Accuracy | 95% CI |
+|---|---|---|---|
+| Claude Opus 4.8 | proprietary | 99.6% | 99.0–99.8% |
+| DeepSeek V4 Pro | **open** | 99.5% | 98.8–99.8% |
+| GPT-5.5 | proprietary | 98.4% | 97.4–99.0% |
+| GLM 5.2 | **open** | 98.4% | 97.4–99.0% |
+| Gemini 2.5 Pro | proprietary | 98.1% | 97.1–98.8% |
 
 **Hard benchmark** — extraction straight from the raw inline-XBRL filing (no hints), plus a
 turnover-hallucination trap. (Raw filing contexts are withheld for privacy; scores are reproducible
 by the dataset holder.)
 
-| Model | Type | Accuracy |
-|---|---|---|
-| GPT-5.5 | proprietary | 97.9% |
-| Claude Opus 4.8 | proprietary | 97.3% |
-| Gemini 2.5 Pro | proprietary | 96.7% |
-| DeepSeek V4 Pro | **open** | 96.7% |
-| GLM 5.2 | **open** | 95.8% |
+| Model | Type | Accuracy | 95% CI |
+|---|---|---|---|
+| GPT-5.5 | proprietary | 97.9% | 95.8–99.0% |
+| Claude Opus 4.8 | proprietary | 97.3% | 95.0–98.6% |
+| Gemini 2.5 Pro | proprietary | 96.7% | 94.3–98.1% |
+| DeepSeek V4 Pro | **open** | 96.7% | 94.3–98.1% |
+| GLM 5.2 | **open** | 95.8% | 93.2–97.5% |
+
+*CIs are 95% Wilson intervals. Read both tables as tiers, not rankings: on the clean set the
+top pair is statistically separable from the other three (p < 0.05), but adjacent positions
+are not; on the hard set (n = 350) no pairwise difference is significant — all five models
+are statistically indistinguishable on raw filings.*
 
 **Why it matters:** the residual ~1–4% error is the *wrong kind* for finance — inventing £0 for
 turnover that filleted accounts legally omit, grabbing the wrong line, sign slips on net
@@ -57,6 +62,11 @@ Answers are computed from the source data, not hand-labelled. Grading tolerates 
 models reply (units, "not disclosed" phrasing, dropped spaces in names). Contexts contain **no
 personal data**. Full methodology, including the corrections we made when our own benchmark or
 dataset was at fault, is documented alongside the dataset.
+
+**Contamination:** Companies House filings are public and may appear in model training data.
+The risk is bounded — answering requires reading the specific figures in context — but can't be
+ruled out, so treat scores as an upper bound on unseen-document performance. A post-training-cutoff
+slice (filings published after each model's cutoff) is the planned control.
 
 ## Licence
 - **Benchmark data** (`benchmark.jsonl`): **CC BY 4.0** — free to use with attribution.
