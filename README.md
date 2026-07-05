@@ -63,10 +63,12 @@ models reply (units, "not disclosed" phrasing, dropped spaces in names). Context
 personal data**. Full methodology, including the corrections we made when our own benchmark or
 dataset was at fault, is documented alongside the dataset.
 
-**Contamination:** Companies House filings are public and may appear in model training data.
-The risk is bounded — answering requires reading the specific figures in context — but can't be
-ruled out, so treat scores as an upper bound on unseen-document performance. A post-training-cutoff
-slice (filings published after each model's cutoff) is the planned control.
+**Contamination — tested (July 2026):** a 350-item control slice built solely from filings
+*published after every evaluated model's release* (provably absent from training data) scored
+98.0–98.6% across all five models — at or above each model's hard-benchmark score, with the
+turnover trap still catching every model. Memorisation does not explain these results. Tooling
+and sourced release dates: `build_benchmark_postcutoff.py` + `model_cutoffs.json` in the
+pipeline repo.
 
 ## Licence
 - **Benchmark data** (`benchmark.jsonl`): **CC BY 4.0** — free to use with attribution.
