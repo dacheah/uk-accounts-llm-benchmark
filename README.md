@@ -65,10 +65,12 @@ dataset was at fault, is documented alongside the dataset.
 
 **Contamination — tested (July 2026):** a 350-item control slice built solely from filings
 *published after every evaluated model's release* (provably absent from training data) scored
-98.0–98.6% across all five models — at or above each model's hard-benchmark score, with the
-turnover trap still catching every model. Memorisation does not explain these results. Tooling
-and sourced release dates: `build_benchmark_postcutoff.py` + `model_cutoffs.json` in the
-pipeline repo.
+98.0–98.6% across all five models — at or above each model's hard-benchmark score. Memorisation
+does not explain these results. Notably, of the ten misses on this slice, five were the slice's
+own ground-truth artifacts (caught because four or five models answered identically against our
+parser; both parser and builder since fixed) — excluding them, models scored 99.4–100.0%.
+Tooling and sourced release dates: `build_benchmark_postcutoff.py` + `model_cutoffs.json` in
+the pipeline repo.
 
 ## Licence
 - **Benchmark data** (`benchmark.jsonl`): **CC BY 4.0** — free to use with attribution.
