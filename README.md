@@ -19,28 +19,34 @@ ratio, boolean, disclosure).
 | GLM 5.2 | **open** | 98.4% | 97.4–99.0% |
 | Gemini 2.5 Pro | proprietary | 98.1% | 97.1–98.8% |
 
-**Hard benchmark** — extraction straight from the raw inline-XBRL filing (no hints), plus a
-turnover-hallucination trap. (Raw filing contexts are withheld for privacy; scores are reproducible
-by the dataset holder.)
+**Hard benchmark — raw filings, provably unseen (n = 350).** Extraction straight from the raw
+inline-XBRL filing (no hints), plus a turnover-hallucination trap — drawn only from filings
+published *after every model's release*, so this table doubles as the contamination control.
+(Raw filing contexts are withheld for privacy; scores are reproducible by the dataset holder.)
 
-| Model | Type | Accuracy | 95% CI |
-|---|---|---|---|
-| GPT-5.5 | proprietary | 97.9% | 95.8–99.0% |
-| Claude Opus 4.8 | proprietary | 97.3% | 95.0–98.6% |
-| Gemini 2.5 Pro | proprietary | 96.7% | 94.3–98.1% |
-| DeepSeek V4 Pro | **open** | 96.7% | 94.3–98.1% |
-| GLM 5.2 | **open** | 95.8% | 93.2–97.5% |
+| Model | Type | As run | 95% CI | Adjudicated¹ |
+|---|---|---|---|---|
+| Claude Opus 4.8 | proprietary | 99.4% | 97.9–99.8% | 100.0% |
+| GPT-5.5 | proprietary | 99.4% | 97.9–99.8% | 100.0% |
+| GLM 5.2 | **open** | 99.4% | 97.9–99.8% | 100.0% |
+| Gemini 2.5 Pro | proprietary | 98.9% | 97.1–99.6% | 99.4% |
+| DeepSeek V4 Pro | **open** | 98.9% | 97.1–99.6% | 99.4% |
+
+¹ Two items were missed *identically* by all five models — the signal that our ground truth, not
+the models, is wrong. Both had context polluted by the filing's raw CSS block (renderer fix in
+hand); excluded as builder artifacts (n = 348). Turnover trap: **70/70 for all five models.**
 
 *CIs are 95% Wilson intervals. Read both tables as tiers, not rankings: on the clean set the
 top pair is statistically separable from the other three (p < 0.05), but adjacent positions
-are not; on the hard set (n = 350) no pairwise difference is significant — all five models
-are statistically indistinguishable on raw filings.*
+are not; on the raw-filing set no pairwise difference is significant — all five models are
+statistically indistinguishable on raw, unseen filings.*
 
-**Why it matters:** the residual ~1–4% error is the *wrong kind* for finance — inventing £0 for
-turnover that filleted accounts legally omit, grabbing the wrong line, sign slips on net
-liabilities. Fine for a demo; disqualifying for a credit model or a rating input. And because
-open-weight models (which finance firms *can* self-host under data-governance rules) match the
-proprietary big three, the only scarce asset in the chain is **verified, provenance-tracked data.**
+**Why it matters:** the residual error is the *wrong kind* for finance — grabbing the wrong line
+(6,585 read as 10,085), a digit slip (290 → 390), an over-conservative "not disclosed" for a
+figure that's present. Silent, plausible wrong numbers: fine for a demo, disqualifying for a
+credit model or a rating input. And because open-weight models (which finance firms *can*
+self-host under data-governance rules) match the proprietary big three, the only scarce asset in
+the chain is **verified, provenance-tracked data.**
 
 ## What's in here
 - `benchmark.jsonl` — the 1,000 verified questions and answers (add this file; see below).
@@ -63,14 +69,17 @@ models reply (units, "not disclosed" phrasing, dropped spaces in names). Context
 personal data**. Full methodology, including the corrections we made when our own benchmark or
 dataset was at fault, is documented alongside the dataset.
 
-**Contamination — tested (July 2026):** a 350-item control slice built solely from filings
-*published after every evaluated model's release* (provably absent from training data) scored
-98.0–98.6% across all five models — at or above each model's hard-benchmark score. Memorisation
-does not explain these results. Notably, of the ten misses on this slice, five were the slice's
-own ground-truth artifacts (caught because four or five models answered identically against our
-parser; both parser and builder since fixed) — excluding them, models scored 99.4–100.0%.
-Tooling and sourced release dates: `build_benchmark_postcutoff.py` + `model_cutoffs.json` in
-the pipeline repo.
+**Contamination — tested and ruled out (v2, July 2026):** the hard table above *is* the control
+— every question comes from filings *published after every evaluated model's release*, so they
+cannot be in any training set. Scores (98.9–99.4% as run) sit at or above each model's earlier
+hard-set score; memorisation would produce the opposite. Two of the misses were answered
+identically "0" by all five models — the signal that our ground truth, not the models, was wrong:
+their context was polluted by the filing's raw CSS `<style>` block, burying the balance-sheet
+figure (renderer fix: strip `<style>`/`<script>`). Excluding those two builder artifacts (n=348),
+models scored **99.4–100.0%**, with the turnover trap clean at **70/70 for all five**. This
+supersedes the v1 post-cutoff run (which surfaced five prior-year-fallback artifacts, since
+fixed). Tooling and sourced release dates: `build_benchmark_postcutoff.py` + `model_cutoffs.json`
+in the pipeline repo.
 
 ## Licence
 - **Benchmark data** (`benchmark.jsonl`): **CC BY 4.0** — free to use with attribution.
