@@ -81,6 +81,16 @@ supersedes the v1 post-cutoff run (which surfaced five prior-year-fallback artif
 fixed). Tooling and sourced release dates: `build_benchmark_postcutoff.py` + `model_cutoffs.json`
 in the pipeline repo.
 
+**June hard set re-audited (July 2026):** applying the same multi-model adjudication to the
+original 350-item June hard set found 19 ground-truth artifacts (3 sign-bug, 1 prior-year
+fallback, 2 traps whose filings actually display the figure, 13 dormant-company traps).
+Adjudicated: **97.6–99.7%** (n = 331), valid trap **55/55 for all five models**. Across all three
+evaluation rounds that is ~970 valid trap trials with **zero invented turnover figures** — we
+therefore retire, as falsified by our own audit, the "£0 for hidden turnover" failure mode this
+benchmark originally reported. The real residual class is the silent wrong-line grab under
+adversarial layouts; the loudest finding is that every multi-model disagreement with our ground
+truth was our error, not theirs.
+
 ## Licence
 - **Benchmark data** (`benchmark.jsonl`): **CC BY 4.0** — free to use with attribution.
   Derived from Companies House data under the Open Government Licence v3.0
